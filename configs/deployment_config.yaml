@@ -47,6 +47,18 @@ endpoints:
     server:
       # port to open
       url: 0.0.0.0:52000
+      # secure mode
+      # Can be one of:
+      # => disabled
+      # => tls
+      # => mtls
+      secure_mode: "disabled"
+      # Path to the certificate file
+      certificate_path: ""
+      # Path to the key file
+      key_path: ""
+      # Path to the CA file
+      ca_path: ""
 
   unidirectional:
     # Server that receives the audio

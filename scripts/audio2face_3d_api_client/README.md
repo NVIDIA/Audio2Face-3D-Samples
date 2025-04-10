@@ -18,6 +18,9 @@ pip3 install -r requirements
 pip3 install ../../proto/sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
 ```
 
+Note: This wheel is compatible with Audio2Face-3D NIM 1.3
+
+
 ```bash
 python3 ./nim_a2f_3d_client.py <audio_file.wav> <config.yml> --apikey <API_KEY> --function-id <Function_ID>
 ```

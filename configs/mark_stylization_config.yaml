@@ -42,6 +42,8 @@ a2f:
   # A2F model, can be one of james_v2.3, claire_v2.3 or mark_v2.3
   inference_model_id: mark_v2.3
   blendshape_id: mark_topo1_v2.1
+  tongue_blendshape_id: mark_tongue_v1.0
+  enable_tongue_blendshapes: true
 
   face_params:
     eyelid_offset: 0.06 # Adjusts the default pose of eyelid open-close

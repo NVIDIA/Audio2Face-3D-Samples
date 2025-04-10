@@ -10,6 +10,12 @@ Make sure:
 
 are installed on your machine.
 
+Set your NGC API key in the `NGC_API_KEY` environment variable.
+
+```bash
+export NGC_API_KEY=<your_ngc_api_key>
+```
+
 ## Getting started
 
 To run the containers on your machine you need to run docker compose in the same directory as the  `docker-compose.yml` file.

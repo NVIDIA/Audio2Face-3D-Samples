@@ -30,6 +30,9 @@ Install the the gRPC proto for python by:
   pip3 install ../../proto/sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
   ```
 
+Note: This wheel is compatible with Audio2Face-3D NIM 1.3
+
+
 * Manual installation: Follow the [README](../../proto/README.md) in the
   [proto/](../../proto/) folder.
 

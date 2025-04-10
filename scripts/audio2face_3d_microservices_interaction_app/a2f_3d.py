@@ -209,8 +209,16 @@ async def read_from_stream(stream, should_print_to_files, print_fps):
             # Message is status
             print()
             status = message.status
-            print(f"Received status message with value: '{status.message}'")
-            print(f"Status code: '{status.code}'")
+            if status.code == 0:
+                print("Status code: SUCCESS")
+            if status.code == 1:
+                print("Status code: INFO")
+            if status.code == 2:
+                print("Status code: WARNING")
+            if status.code == 3:
+                print("Status code: ERROR")
+                print("If you have an error related to audio input limits, you can adjust the microservice advanced configuration file to fix this issue.")
+            print(f"{status.message}")
 
 
 async def write_to_stream(stream, config_path, audio_file_path, print_fps):
@@ -309,11 +317,11 @@ async def write_to_stream(stream, config_path, audio_file_path, print_fps):
     await stream.write(AudioStream(end_of_audio=AudioStream.EndOfAudio()))
 
 
-def check_health(channel: grpc.Channel):
+async def check_health(channel: grpc.aio.Channel):
     """
     Check the health of the Audio2Face-3D service
     Args:
-        channel (grpc.Channel): A gRPC channel to communicate with the Audio2Face-3D service
+        channel (grpc.aio.Channel): A async gRPC channel to communicate with the Audio2Face-3D service
 
     Returns:
         bool: True if the service is healthy, False otherwise
@@ -322,10 +330,10 @@ def check_health(channel: grpc.Channel):
     stub = HealthStub(channel)
 
     try:
-        response = stub.Check(HealthCheckRequest())
+        response = await stub.Check(HealthCheckRequest())
         return response.status == HealthCheckResponse.SERVING
     except grpc.RpcError as err:
-        print(f"Error checking health: {err}")
+        print(f"{err.details()}")
         return False
 
 
@@ -344,6 +352,10 @@ def create_parser():
     # Health check subparser
     health_check_parser = subparsers.add_parser("health_check", help="Check GRPC service health")
     health_check_parser.add_argument("--url", type=str, required=True, help="GRPC service URL")
+    health_check_parser.add_argument("--secure-mode", type=str, choices=["disabled", "tls", "mtls"], default="disabled", help="Security mode")
+    health_check_parser.add_argument("--root-cert-path", type=str, help="Path to the root certificate")
+    health_check_parser.add_argument("--client-cert-path", type=str, help="Path to the client certificate (required for mTLS)")
+    health_check_parser.add_argument("--client-key-path", type=str, help="Path to the client key (required for mTLS)")
 
     # Run inference subparser
     inference_parser = subparsers.add_parser("run_inference", help="Send GRPC request and run inference for an audio file")
@@ -351,6 +363,10 @@ def create_parser():
     inference_parser.add_argument("config", help="Configuration file")
     inference_parser.add_argument("-u", "--url", help="URL of the A2F-3D NIM", required=True)
     inference_parser.add_argument("--print-fps",action="store_true", required=False, default=False, help=argparse.SUPPRESS)
+    inference_parser.add_argument("--secure-mode", type=str, choices=["disabled", "tls", "mtls"], default="disabled", help="Security mode")
+    inference_parser.add_argument("--root-cert-path", type=str, help="Path to the root certificate")
+    inference_parser.add_argument("--client-cert-path", type=str, help="Path to the client certificate (required for mTLS)")
+    inference_parser.add_argument("--client-key-path", type=str, help="Path to the client key (required for mTLS)")
     inference_parser.add_argument(
         "--skip-print-to-files",
         help=(
@@ -359,22 +375,53 @@ def create_parser():
         action="store_true", required=False, default=False)
     return parser
 
+def create_grpc_channel(server_address, secure_mode=None, root_cert_path=None, client_cert_path=None, client_key_path=None):
+    if secure_mode == "mtls":
+        with open(root_cert_path, 'rb') as f:
+            root_cert = f.read()
+        with open(client_cert_path, 'rb') as f:
+            client_cert = f.read()
+        with open(client_key_path, 'rb') as f:
+            client_key = f.read()
+        credentials = grpc.ssl_channel_credentials(root_certificates=root_cert,
+                                                   private_key=client_key,
+                                                   certificate_chain=client_cert)
+        return grpc.aio.secure_channel(server_address, credentials)
+    elif secure_mode == "tls":
+        with open(root_cert_path, 'rb') as f:
+            root_cert = f.read()
+        credentials = grpc.ssl_channel_credentials(root_certificates=root_cert)
+        return grpc.aio.secure_channel(server_address, credentials)
+    else:
+        return grpc.aio.insecure_channel(server_address)
 
 async def main():
     args = create_parser().parse_args()
     # Suppress WavFileWarning warnings
     warnings.filterwarnings("ignore", category=scipy.io.wavfile.WavFileWarning)
 
+    secure_mode = args.secure_mode.lower()
+    if secure_mode in ["tls", "mtls"]:
+        if not args.root_cert_path:
+            print("Error: root_cert_path is required for secure_mode 'tls' or 'mtls'")
+            return
+        if secure_mode == "mtls" and (not args.client_cert_path or not args.client_key_path):
+            print("Error: client_cert_path and client_key_path are required for secure_mode 'mtls'")
+            return
+
+    channel = create_grpc_channel(args.url, secure_mode, args.root_cert_path, args.client_cert_path, args.client_key_path)
+
     if args.command == "health_check":
         # Checks the health of the service at the specified URL.
         # Prints "ONLINE" if the service is available, "OFFLINE" otherwise.
-        print(f'Service {args.url} is {"ONLINE" if (check_health(grpc.insecure_channel(args.url))) else "OFFLINE"}')
+        is_online = await check_health(channel)
+        print(f'Service {args.url} is {"ONLINE" if is_online else "OFFLINE"}')
 
     elif args.command == "run_inference":
-        # Creating an insecure channel to connect to the A2F-3D NIM.
+        # Creating a channel to connect to the A2F-3D NIM.
         # If behind HTTPS proxy or using HTTPS, please refer to
         # https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.secure_channel
-        async with grpc.aio.insecure_channel(args.url) as c:
+        async with channel as c:
             # Creating a stub for the service. This allows us to use the remote channel to communicate
             # via RPC to the controller.
             stub = A2FControllerServiceStub(c)
@@ -385,23 +432,27 @@ async def main():
             stream = stub.ProcessAudioStream()
             # We create an asyncio task for reading the content of the string, into a async function
             # called read_from_stream.
-            read = asyncio.create_task(read_from_stream(stream, not args.skip_print_to_files, args.print_fps))
 
             try:
+                read = asyncio.create_task(read_from_stream(stream, not args.skip_print_to_files, args.print_fps))
                 # We create another asyncio task for writing into the stream. This allows us to run them
                 # both in parrallel instead of sequentially.
                 write = asyncio.create_task(write_to_stream(stream, args.config, args.file, args.print_fps))
                 # Await task termination.
                 await write
+                # Await task termination.
+                await read
             except ValueError as e:
                 print(f"Error: {e}")
+                exit(1)
+            except grpc.aio.AioRpcError as e:
+                print(f"{e.details()}")
                 exit(1)
             except Exception as e:
                 print(f"Unexpected error: {e}")
                 exit(1)
 
-            # Await task termination.
-            await read
+
 
 if __name__ == "__main__":
     asyncio.run(main())

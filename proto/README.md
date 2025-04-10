@@ -5,6 +5,8 @@ You can either:
 * Install the provided `nvidia_ace` python wheel package from the
 [sample_wheel/](./sample_wheel/) folder with pip:
 
+Note: This wheel is compatible with Audio2Face-3D NIM 1.3
+
 ```bash
 pip3 install ./sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
 ```
@@ -12,6 +14,8 @@ pip3 install ./sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
 * Generate the gRPC python module and manually copy it in the same folder as the
 script you want to run.
 * Generate the gRPC python module and make your own python wheel package.
+
+**Note:** Audio2Face-3D NIM v1.3 continues to use v1.2.0 of the nvidia_ace gRPC python module.
 
 ## Generate the gRPC python module
 

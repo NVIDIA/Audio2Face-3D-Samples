@@ -34,6 +34,9 @@ Install the the gRPC proto for python by:
   pip3 install ../../proto/sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
   ```
 
+Note: This wheel is compatible with Audio2Face-3D NIM 1.3
+
+
 * Manual installation: Follow the [README](../../proto/README.md) in the
 [proto/](../../proto/) folder.
 
@@ -61,10 +64,97 @@ The scripts takes three mandatory parameters:
 * a yaml configuration file for the emotions parameters; you can find sample configuration files under `config/` folder.
 * a parameter `-u` which is the URL of a running A2F-3D NIM
 
-The scripts has 2 optional parameters:
+The scripts has other optional parameters:
 
 * `--skip-print-to-files`. When present, the script does not output the animation and emotion data to files
 * `--print-fps`: When present, the script will also print data used for performance evaluation
+* `--secure-mode`: You can specify the security mode ["disabled", "tls", "mtls"] to connect with the server
+* `--root-cert-path` : Path to the root certificate (required for tls/mtls)
+* `--client-cert-path` : Path to the client certificate (required for mtls)
+* `--client-key-path` : Path to the client key (required for mtls)
+
+### Secure communication with Audio2Face-3D NIM
+This script supports communicating with Audio2Face-3D NIM in different secure modes via certificates.
+
+#### How to generate self-signed CA, server & client Certificates
+
+Generate Certificate Authority (CA)
+```bash
+openssl genrsa -out ca.key 4096
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 365 -out ca.crt -subj "/CN=MyCA"
+```
+
+Generate Server Key & Certificate Signing Request (CSR)
+```bash
+openssl genrsa -out server.key 4096
+openssl req -new -key server.key -out server.csr -subj "/CN=0.0.0.0" -addext "subjectAltName=DNS:localhost,IP:0.0.0.0"
+```
+
+Sign Server Certificate with CA
+```bash
+openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 365 -sha256 -extfile <(echo "subjectAltName=DNS:localhost,IP:0.0.0.0")
+```
+
+Generate Client Key & CSR
+```bash
+openssl  genrsa -out client.key 4096
+openssl req -new -key client.key -out client.csr -subj "/CN=client"
+```
+
+Sign Client Certificate with CA
+```bash
+openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 365 -sha256
+```
+#### Run a2f_3d.py in different modes
+
+`--secure-mode` supports 3 modes: ["disabled", "tls", "mtls"]
+
+1. "disabled" : non secure mode with no encryption/authentication
+
+```bash
+python3 a2f_3d.py health_check --url <ip>:<port> --secure-mode "disabled"
+```
+
+```bash
+python3 a2f_3d.py run_inference <audio_file.wav> <config.yml> -u <ip>:<port> --secure-mode "disabled"
+```
+
+2. "tls" : Communication is encrypted and server identity is verified.
+
+```bash
+python3 a2f_3d.py health_check \
+    --url <ip>:<port> \
+    --secure-mode "tls" \
+    --root-cert-path "ca.crt"
+```
+
+```bash
+python3 a2f_3d.py run_inference <audio_file.wav> <config.yml> \
+    --url <ip>:<port> \
+    --secure-mode "tls" \
+    --root-cert-path "ca.crt"
+```
+
+3. "mtls": Communication is encrypted and client-server mutual authentication is enforced
+
+```bash
+python3 a2f_3d.py health_check \
+    --url <ip>:<port> \
+    --secure-mode "mtls" \
+    --root-cert-path "ca.crt" \
+    --client-cert-path "client.crt" \
+    --client-key-path "client.key"
+```
+
+```bash
+python3 a2f_3d.py run_inference <audio_file.wav> <config.yml> \
+    --url <ip>:<port> \
+    --secure-mode "mtls" \
+    --root-cert-path "ca.crt" \
+    --client-cert-path "client.crt" \
+    --client-key-path "client.key"
+```
+
 
 This script also measures and prints to console the latency and FPS for processing the given audio file, but the result
 is not statistically meaningful for your Audio2Face-3D deployment. To perform a performance test, follow
@@ -89,6 +179,7 @@ value and time codes.
 
 The API to retrieve the emotions via metadata object is still alpha and
 susceptible to changes.
+
 
 ### Running the nim_performance_test.py script
 

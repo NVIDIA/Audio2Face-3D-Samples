@@ -2,6 +2,8 @@
 
 This sample python app allows you to migrate your A2F-3D config files from v1.0 to v1.2.
 
+Note: Audio2Face-3D NIM 1.3 is backward compatible with v1.2 configs.
+
 ## Prerequisites
 
 Install:

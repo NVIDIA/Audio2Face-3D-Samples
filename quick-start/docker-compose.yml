@@ -15,7 +15,7 @@
 
 services:
   a2f-3d-init:
-    image: nvcr.io/nim/nvidia/audio2face-3d:1.2
+    image: nvcr.io/nim/nvidia/audio2face-3d:1.3
     container_name: a2f-3d-init
     secrets:
       - ngc_api_key
@@ -34,7 +34,7 @@ services:
               capabilities: [ gpu ]
 
   a2f-3d-service:
-    image: nvcr.io/nim/nvidia/audio2face-3d:1.2
+    image: nvcr.io/nim/nvidia/audio2face-3d:1.3
     secrets:
       - ngc_api_key
     depends_on:

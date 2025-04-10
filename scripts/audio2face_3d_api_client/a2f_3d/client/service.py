@@ -155,8 +155,18 @@ async def read_from_stream(stream):
             # Message is status
             print()
             status = message.status
+            if status.code == 0:
+                print("Status code: SUCCESS")
+            if status.code == 1:
+                print("Status code: INFO")
+            if status.code == 2:
+                print("Status code: WARNING")
+            if status.code == 3:
+                print("Status code: ERROR")
+                print("If you have an error related to audio input limits, you can adjust the microservice advanced configuration file to fix this issue.")
+
             print(f"Received status message with value: '{status.message}'")
-            print(f"Status code: '{status.code}'")
+           
 
 async def write_to_stream(stream, config_path, audio_file_path):
     # Read the content of the audio file, extracting sample rate and data.
