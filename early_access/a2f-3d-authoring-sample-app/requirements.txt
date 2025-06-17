@@ -1,5 +1,5 @@
 grpcio-tools
-protobuf==5.28.1
+protobuf==5.29.5
 pydantic
 grpcio
 numpy
