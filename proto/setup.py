@@ -25,7 +25,7 @@ setup(
         'PyYAML==6.0.1',
         'grpclib==0.4.7',
         'googleapis-common-protos==1.60.0',
-        'protobuf==4.24.1',
+        'protobuf==4.25.8',
         'protobuf-gen==0.0.4',
     ],
     # Metadata
