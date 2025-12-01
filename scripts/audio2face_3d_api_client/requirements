@@ -4,3 +4,5 @@ grpcio==1.72.0rc1
 protobuf==4.24.1
 PyYAML==6.0.1
 pandas==2.2.2
+gradio==6.0.1
+opencv-python-headless==4.12.0.88
