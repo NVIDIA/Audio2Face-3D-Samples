@@ -13,14 +13,18 @@ display a 3D avatar's performance.
 
 This Git repository stores resources presented in
 [Audio2Face-3D Microservice documentation](https://docs.nvidia.com/ace/latest/modules/a2f-docs/text/getting_started/overview.html).
-However, Audio2Face-3D NIM can be obtained through an evaluation license of NV AI Enterprise (NVAIE) through NGC.
+Audio2Face-3D NIM can be obtained through the [NGC Catalog](https://catalog.ngc.nvidia.com/):
 
-1. [Try out the A2F-3D NIM experience](https://build.nvidia.com/nvidia/audio2face-3d)
-2. [Try NIM For Digital Human](https://build.nvidia.com/explore/gaming)
+| Resource | Tags | Type |
+|----------|------|------|
+| `nim/nvidia/audio2face-3d` | `latest`, `2`, `2.0`, `2.0.0` | NIM |
+| `nim/nvidia/audio2face-3d` | `2.0`, `2.0.0` | Helm Chart |
+| `nim/nvidia/audio2face-3d-nv-one-click-script` | `latest`, `2`, `2.0`, `2.0.0` | Resource |
+
 
 ## Example Workflows
 
-For example worflows, please see the [NVIDIA ACE samples, workflows, and resources](https://github.com/NVIDIA/ACE?tab=readme-ov-file#digital-human-workflows) Git repository.
+For example workflows, please see the [NVIDIA ACE samples, workflows, and resources](https://github.com/NVIDIA/ACE?tab=readme-ov-file#digital-human-workflows) Git repository.
 
 ## Documentation
 
@@ -51,6 +55,6 @@ Here is a quick overview of the available Audio2Face-3D resources in this Git re
 
 Github - [Apache 2](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-ACE NIMs and NGC Microservices - [NVIDIA AI Product License](https://www.nvidia.com/en-us/data-center/products/nvidia-ai-enterprise/eula/)
+ACE NIMs and NGC Microservices - [NVIDIA Software License Agreement](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-software-license-agreement/) and [Product-Specific Terms for NVIDIA AI Products](https://www.nvidia.com/en-us/agreements/enterprise-software/product-specific-terms-for-ai-products/). Use of the Audio2Face models is governed by the [NVIDIA Open Model License](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/). Use of the Audio2Emotion model is governed by the [License Agreement for NVIDIA Audio2Emotion Model for Use with Audio2Face Project](https://huggingface.co/nvidia/Audio2Emotion-v3.0/blob/main/LICENSE).
 
 Note: This project will download and install additional third-party open source software projects. Review the license terms of these open source projects before use.
