@@ -17,9 +17,9 @@ Audio2Face-3D NIM can be obtained through the [NGC Catalog](https://catalog.ngc.
 
 | Resource | Tags | Type |
 |----------|------|------|
-| `nim/nvidia/audio2face-3d` | `latest`, `2`, `2.0`, `2.0.0` | NIM |
-| `nim/nvidia/audio2face-3d` | `2.0`, `2.0.0` | Helm Chart |
-| `nim/nvidia/audio2face-3d-nv-one-click-script` | `latest`, `2`, `2.0`, `2.0.0` | Resource |
+| [audio2face-3d](https://catalog.ngc.nvidia.com/orgs/nim/teams/nvidia/containers/audio2face-3d?version=latest) | `latest`, `2`, `2.0`, `2.0.0` | NIM |
+| [audio2face-3d](https://catalog.ngc.nvidia.com/orgs/nim/teams/nvidia/helm-charts/audio2face-3d?version=2.0.0) | `2.0`, `2.0.0` | Helm Chart |
+| [audio2face-3d-nv-one-click-script](https://catalog.ngc.nvidia.com/orgs/nim/teams/nvidia/resources/audio2face-3d-nv-one-click-script) | `latest`, `2`, `2.0`, `2.0.0` | Resource |
 
 
 ## Example Workflows
