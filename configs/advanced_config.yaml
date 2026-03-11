@@ -38,11 +38,12 @@ input_sanitization:
   low_fps: 29
   low_fps_max_duration_second: 7
 
+# WARN: Deprecated
 garbage_collector:
   # enable or disable the garbage collector
   # This is only used with bidirectional connection where the service is holding data
   # waiting for the client to pick them up.
-  enabled: true
+  enabled: false
   # how often the garbage collector should run
   interval_run_second: 10
   # If the garbage collector finds streams holding
@@ -81,6 +82,7 @@ a2f:
   # used for debugging individual frames generated
   temporal_smoothing: true
   device_id: 0 # Which gpu id to use
+  use_gpu_solver: true
 
 a2e:
   inference_interval: 10
@@ -89,7 +91,8 @@ a2e:
 
 trt_model_generation:
   a2e:
-    precision: "fp16"
+    #Audio2Emotion engine currently does not support precision other than FP32
+    precision: "fp32"
     min_shape: 1
     optimal_shape: 10
     maximum_shape: 128
@@ -98,3 +101,12 @@ trt_model_generation:
     min_shape: 1
     optimal_shape: 10
     maximum_shape: 128
+
+resampling:
+  # Size of chunks used during resampling process
+  chunk_size: 640
+  # Resampling quality parameter
+  # - Range: 1.0 to 10.0
+  # - Higher values yield superior audio quality
+  # - Lower values prioritize computational performance
+  quality: 1.0

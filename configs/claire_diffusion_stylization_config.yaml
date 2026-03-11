@@ -40,7 +40,7 @@ a2e:
 
 a2f:
   # regression / diffusion
-  inference_type: regression
+  inference_type: diffusion
 
   regression_model:
     inference_model_id: claire_v2.3.1
@@ -48,6 +48,7 @@ a2f:
   diffusion_model:
     inference_model_id: multi_v3.2
     identity: claire
+    constant_noise: true
 
   face_params:
     eyelid_offset: 0.0 # Adjusts the default pose of eyelid open-close
@@ -416,3 +417,4 @@ a2f:
       TongueStretch: -1
       TongueWide: -1
       TongueNarrow: -1
+

@@ -33,6 +33,12 @@ face_parameters:
   eyelidOpenOffset: 0.06
   # Adjusts the default pose of lip close-open
   lipOpenOffset: -0.02
+  # Controls the range of motion of the tongue
+  tongueStrength: 1.3
+  # Adjusts the vertical position of the tongue
+  tongueHeightOffset: 0.0
+  # Adjusts the forward/backward position of the tongue
+  tongueDepthOffset: 0.0
 
 # contains multipliers and offsets to be applied on the inference result
 # For more information about blendshapes see:
@@ -92,6 +98,22 @@ blendshape_parameters:
     NoseSneerLeft: 0.8
     NoseSneerRight: 0.8
     TongueOut: 0.0
+    TongueTipUp: 1.0
+    TongueTipDown: 1.0
+    TongueTipLeft: 1.0
+    TongueTipRight: 1.0
+    TongueRollUp: 1.0
+    TongueRollDown: 1.0
+    TongueRollLeft: 1.0
+    TongueRollRight: 1.0
+    TongueUp: 1.0
+    TongueDown: 1.0
+    TongueLeft: 1.0
+    TongueRight: 1.0
+    TongueIn: 1.0
+    TongueStretch: 1.0
+    TongueWide: 1.0
+    TongueNarrow: 1.0
   offsets:
     EyeBlinkLeft: 0.0
     EyeLookDownLeft: 0.0
@@ -145,6 +167,22 @@ blendshape_parameters:
     NoseSneerLeft: 0.0
     NoseSneerRight: 0.0
     TongueOut: 0.0
+    TongueTipUp: 0.0
+    TongueTipDown: 0.0
+    TongueTipLeft: 0.0
+    TongueTipRight: 0.0
+    TongueRollUp: 0.0
+    TongueRollDown: 0.0
+    TongueRollLeft: 0.0
+    TongueRollRight: 0.0
+    TongueUp: 0.0
+    TongueDown: 0.0
+    TongueLeft: 0.0
+    TongueRight: 0.0
+    TongueIn: 0.0
+    TongueStretch: 0.0
+    TongueWide: 0.0
+    TongueNarrow: 0.0
 
 # Parameter related to temporal smoothing of emotion
 # Expected value range (0, inf]

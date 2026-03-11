@@ -22,6 +22,7 @@ common:
 
   # Pad each audio file with some 1.5 seconds of silent audio
   add_silence_padding_after_audio: false
+  silence_padding_duration_second: 1.5
 
 logging:
   # Level of log wanted, info is recommended
@@ -30,9 +31,9 @@ logging:
   # => debug
   # => info
   # => warn
-  # => err
+  # => error
   # => critical
-  # => off
+  # => disabled
   log_level: info
   # How often should FPS logs be printed per stream
   fps_logging_interval_second: 1
@@ -47,7 +48,7 @@ endpoints:
     server:
       # port to open
       url: 0.0.0.0:52000
-      # secure mode
+            # secure mode
       # Can be one of:
       # => disabled
       # => tls

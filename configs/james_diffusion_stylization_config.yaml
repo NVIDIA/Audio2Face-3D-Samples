@@ -40,23 +40,24 @@ a2e:
 
 a2f:
   # regression / diffusion
-  inference_type: regression
+  inference_type: diffusion
 
   regression_model:
-    inference_model_id: claire_v2.3.1
+    inference_model_id: james_v2.3.1
 
   diffusion_model:
     inference_model_id: multi_v3.2
-    identity: claire
+    identity: james
+    constant_noise: true
 
   face_params:
-    eyelid_offset: 0.0 # Adjusts the default pose of eyelid open-close
+    eyelid_offset: 0.06 # Adjusts the default pose of eyelid open-close
     face_mask_level: 0.6 # Determines the boundary between the upper and lower regions of the face
     face_mask_softness: 0.0085 # Determines how smoothly the upper and lower face regions blend on the boundary
     input_strength: 1.0 # Controls the magnitude of the input audio
-    lip_close_offset: 0.0 # Adjusts the default pose of lip close-open
+    lip_close_offset: -0.02 # Adjusts the default pose of lip close-open
     lower_face_smoothing: 0.006 # Applies temporal smoothing to the lower face motion
-    lower_face_strength: 1.25 # Controls the range of motion on the lower regions of the face
+    lower_face_strength: 1.2 # Controls the range of motion on the lower regions of the face
     skin_strength: 1.0 # Controls the range of motion of the skin
     upper_face_smoothing: 0.001 # Applies temporal smoothing to the upper face motion
     upper_face_strength: 1.0 # Controls the range of motion on the upper regions of the face
@@ -416,3 +417,4 @@ a2f:
       TongueStretch: -1
       TongueWide: -1
       TongueNarrow: -1
+

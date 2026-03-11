@@ -39,11 +39,15 @@ a2e:
     preferred_emotion_strength: 0.5 # Sets the strength of the preferred emotion (if is loaded) relative to generated emotions
 
 a2f:
-  # A2F model, can be one of james_v2.3, claire_v2.3 or mark_v2.3
-  inference_model_id: james_v2.3
-  blendshape_id: james_topo2_v2.2
-  tongue_blendshape_id: james_tongue_v1.0
-  enable_tongue_blendshapes: true
+  # regression / diffusion
+  inference_type: regression
+
+  regression_model:
+    inference_model_id: james_v2.3.1
+
+  diffusion_model:
+    inference_model_id: multi_v3.2
+    identity: james
 
   face_params:
     eyelid_offset: 0.06 # Adjusts the default pose of eyelid open-close
@@ -56,6 +60,9 @@ a2f:
     skin_strength: 1.0 # Controls the range of motion of the skin
     upper_face_smoothing: 0.001 # Applies temporal smoothing to the upper face motion
     upper_face_strength: 1.0 # Controls the range of motion on the upper regions of the face
+    tongue_strength: 1.3
+    tongue_height_offset: 0.0
+    tongue_depth_offset: 0.0
 
   blendshape_params: # Modulates the effect of each blendshapes. Gain * w + offset
     enable_clamping_bs_weight: false
@@ -113,6 +120,22 @@ a2f:
       NoseSneerLeft: 1.0
       NoseSneerRight: 1.0
       TongueOut: 1.0
+      TongueTipUp: 1.0
+      TongueTipDown: 1.0
+      TongueTipLeft: 1.0
+      TongueTipRight: 1.0
+      TongueRollUp: 1.0
+      TongueRollDown: 1.0
+      TongueRollLeft: 1.0
+      TongueRollRight: 1.0
+      TongueUp: 1.0
+      TongueDown: 1.0
+      TongueLeft: 1.0
+      TongueRight: 1.0
+      TongueIn: 1.0
+      TongueStretch: 1.0
+      TongueWide: 1.0
+      TongueNarrow: 1.0
 
     weight_offsets:
       EyeBlinkLeft: 0.0
@@ -167,6 +190,22 @@ a2f:
       NoseSneerLeft: 0.0
       NoseSneerRight: 0.0
       TongueOut: 0.0
+      TongueTipUp: 0.0
+      TongueTipDown: 0.0
+      TongueTipLeft: 0.0
+      TongueTipRight: 0.0
+      TongueRollUp: 0.0
+      TongueRollDown: 0.0
+      TongueRollLeft: 0.0
+      TongueRollRight: 0.0
+      TongueUp: 0.0
+      TongueDown: 0.0
+      TongueLeft: 0.0
+      TongueRight: 0.0
+      TongueIn: 0.0
+      TongueStretch: 0.0
+      TongueWide: 0.0
+      TongueNarrow: 0.0
 
     active_poses:
       EyeBlinkLeft: 1
@@ -221,6 +260,22 @@ a2f:
       NoseSneerLeft: 1
       NoseSneerRight: 1
       TongueOut: 0
+      TongueTipUp: 1
+      TongueTipDown: 1
+      TongueTipLeft: 1
+      TongueTipRight: 1
+      TongueRollUp: 1
+      TongueRollDown: 1
+      TongueRollLeft: 1
+      TongueRollRight: 1
+      TongueUp: 1
+      TongueDown: 1
+      TongueLeft: 1
+      TongueRight: 1
+      TongueIn: 1
+      TongueStretch: 1
+      TongueWide: 1
+      TongueNarrow: 1
 
     cancel_poses:
       EyeBlinkLeft: -1
@@ -275,6 +330,22 @@ a2f:
       NoseSneerLeft: -1
       NoseSneerRight: -1
       TongueOut: -1
+      TongueTipUp: -1
+      TongueTipDown: -1
+      TongueTipLeft: -1
+      TongueTipRight: -1
+      TongueRollUp: -1
+      TongueRollDown: -1
+      TongueRollLeft: -1
+      TongueRollRight: -1
+      TongueUp: -1
+      TongueDown: -1
+      TongueLeft: -1
+      TongueRight: -1
+      TongueIn: -1
+      TongueStretch: -1
+      TongueWide: -1
+      TongueNarrow: -1
 
     symmetry_poses:
       EyeBlinkLeft: 0
@@ -329,3 +400,19 @@ a2f:
       NoseSneerLeft: 12
       NoseSneerRight: 12
       TongueOut: -1
+      TongueTipUp: -1
+      TongueTipDown: -1
+      TongueTipLeft: -1
+      TongueTipRight: -1
+      TongueRollUp: -1
+      TongueRollDown: -1
+      TongueRollLeft: -1
+      TongueRollRight: -1
+      TongueUp: -1
+      TongueDown: -1
+      TongueLeft: -1
+      TongueRight: -1
+      TongueIn: -1
+      TongueStretch: -1
+      TongueWide: -1
+      TongueNarrow: -1
