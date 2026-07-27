@@ -30,7 +30,6 @@ files:
     - nvidia_ace.services.a2f_controller.v1.proto
     - nvidia_ace.services.a2f.v1.proto
     - nvidia_ace.services.animation_controller.v1.proto
-    - nvidia_ace.animation_data.v1.proto
     - nvidia_ace.status.v1.proto
     - nvidia_ace.health.proto
     - nvidia_ace.services.a2f_authoring.v1.proto
