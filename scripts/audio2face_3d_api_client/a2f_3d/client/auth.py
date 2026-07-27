@@ -65,7 +65,7 @@ class Auth:
                 if len(meta) != 2:
                     raise ValueError(f"Metadata should have 2 parameters in \"key\" \"value\" pair. Receieved {len(meta)} parameters.")
                 self.metadata.append(tuple(meta))
-        self.channel: grpc.Channel = create_channel(self.ssl_cert, self.use_ssl, self.uri, self.metadata)
+        self.channel: grpc.Channel = create_channel(self.ssl_cert, uri=self.uri, use_ssl=self.use_ssl, metadata=self.metadata)
 
     def get_auth_metadata(self) -> List[Tuple[str, str]]:
         """
