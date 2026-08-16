@@ -159,6 +159,7 @@ def main():
         file = ".".join(list_elm[-2:])
         fpath = os.path.join(path, file)
         if elm != fpath:
+            os.makedirs(path, exist_ok=True)
             shutil.copy2(elm, fpath)
             os.remove(elm)
     generate_init_py(".")
