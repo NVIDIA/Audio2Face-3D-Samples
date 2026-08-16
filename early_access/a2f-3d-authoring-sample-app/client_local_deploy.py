@@ -129,13 +129,13 @@ def perform_sequential_data_exchange_outputing_result_list(url: str, audio_clip:
     number_frames = int((len(data) / samplerate) * 30)
 
     # Create a gRPC channel and stub for the service.
-    channel = grpc.insecure_channel(url)
-    stub = A2FAuthoringServiceStub(channel)
-    (hash_gotten, bs_names) = upload_audio_clip_and_get_hash(stub, audio_clip)
-    print("Perform sequential requests for the full audio clip...")
-    req_list = [make_face_pose_request(hash_gotten, i * TIME_1_FRAME, bs_names) for i in range(number_frames)]
-    bs_list = [get_avatar_face_pose(stub, elm) for elm in req_list]
-    print("")
+    with grpc.insecure_channel(url) as channel:
+        stub = A2FAuthoringServiceStub(channel)
+        (hash_gotten, bs_names) = upload_audio_clip_and_get_hash(stub, audio_clip)
+        print("Perform sequential requests for the full audio clip...")
+        req_list = [make_face_pose_request(hash_gotten, i * TIME_1_FRAME, bs_names) for i in range(number_frames)]
+        bs_list = [get_avatar_face_pose(stub, elm) for elm in req_list]
+        print("")
     return (bs_list, bs_names)
 
 
@@ -155,7 +155,9 @@ def main():
     if args.command == "health_check":
         # Checks the health of the service at the specified URL.
         # Prints "ONLINE" if the service is available, "OFFLINE" otherwise.
-        print(f'Service {args.url} is {"ONLINE" if (check_health(grpc.insecure_channel(args.url))) else "OFFLINE"}')
+        with grpc.insecure_channel(args.url) as channel:
+            healthy = check_health(channel)
+        print(f'Service {args.url} is {"ONLINE" if healthy else "OFFLINE"}')
 
     elif args.command == "data_capture":
         # Performs sequential data exchange with the service and saves the results to a file.
