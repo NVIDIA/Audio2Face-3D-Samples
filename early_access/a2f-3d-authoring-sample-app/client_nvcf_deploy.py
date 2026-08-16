@@ -60,13 +60,13 @@ def get_blendshapes_for_each_frame(audio_clip: str, metadata_args: list) -> tupl
     samplerate, data = scipy.io.wavfile.read(audio_clip)
     number_frames = int((len(data) / samplerate) * 30)
     # Create a secure gRPC channel and stub for the service.
-    channel = auth.create_channel(uri=auth.GRPC_URI, use_ssl=True, metadata=metadata_args)
-    stub = A2FAuthoringServiceStub(channel)
-    (hash_gotten, bs_names) = upload_audio_clip_and_get_hash(stub, audio_clip)
-    print("Perform sequential requests for the full audio clip...")
-    req_list = [make_face_pose_request(hash_gotten, i * TIME_1_FRAME, bs_names) for i in range(number_frames)]
-    bs_list = [get_avatar_face_pose(stub, req) for req in req_list]
-    print("")
+    with auth.create_channel(uri=auth.GRPC_URI, use_ssl=True, metadata=metadata_args) as channel:
+        stub = A2FAuthoringServiceStub(channel)
+        (hash_gotten, bs_names) = upload_audio_clip_and_get_hash(stub, audio_clip)
+        print("Perform sequential requests for the full audio clip...")
+        req_list = [make_face_pose_request(hash_gotten, i * TIME_1_FRAME, bs_names) for i in range(number_frames)]
+        bs_list = [get_avatar_face_pose(stub, req) for req in req_list]
+        print("")
     return (bs_list, bs_names)
 
 
@@ -175,7 +175,8 @@ def main():
     if args.command == "health_check":
         # Checks the health of the service at the specified URL.
         # Prints "ONLINE" if the service is available, "OFFLINE" otherwise.
-        is_healthy = check_health(auth.create_channel(uri=auth.GRPC_URI, use_ssl=True, metadata=metadata_args))
+        with auth.create_channel(uri=auth.GRPC_URI, use_ssl=True, metadata=metadata_args) as channel:
+            is_healthy = check_health(channel)
         print(f'NVCF Service is {"ONLINE" if is_healthy else "OFFLINE"}')
 
     elif args.command == "data_capture":
