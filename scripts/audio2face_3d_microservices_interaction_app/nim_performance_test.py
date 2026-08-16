@@ -208,6 +208,9 @@ class StatsHolder:
         if type(data) is list:
             data = np.array(data)
 
+        if data.size == 0:
+            data = np.array([np.nan])
+
         self.min = np.min(data)
         self.percentile_1 = np.percentile(data, 1)
         self.percentile_5 = np.percentile(data, 5)
