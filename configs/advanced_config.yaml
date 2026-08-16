@@ -80,7 +80,7 @@ pipeline_parameters:
 a2f:
   # Remove temporal smoothing
   # used for debugging individual frames generated
-  temporal_smoothing: true
+  temporal_smoothing: false
   device_id: 0 # Which gpu id to use
   use_gpu_solver: true
 
