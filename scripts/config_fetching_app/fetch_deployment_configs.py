@@ -52,6 +52,9 @@ def capture_a2x_config_client(url, config_type=v1_pb2.ConfigsTypeRequest.YAML):
 
 def get_yaml_configs(url):
     list_cfg_yaml = capture_a2x_config_client(url, v1_pb2.ConfigsTypeRequest.YAML)
+    if list_cfg_yaml is None:
+        print("Failed to retrieve configs; exiting.")
+        return
 
     curr_index = 1
     curr_name = f"{OUTPUT_BASE_FOLDER}_{curr_index:06}"
