@@ -14,7 +14,7 @@ source .venv/bin/activate
 Then install the required dependencies:
 
 ```bash
-pip3 install -r requirements
+pip3 install -r requirements.txt
 pip3 install ../../proto/sample_wheel/nvidia_ace-1.2.0-py3-none-any.whl
 ```
 
