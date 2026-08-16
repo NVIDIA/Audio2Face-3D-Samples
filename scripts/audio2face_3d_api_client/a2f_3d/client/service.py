@@ -100,6 +100,7 @@ async def read_from_stream(stream):
     # Emotions 'key frames' data from input, a2e output and final a2f-3d smoothed output.
     emotion_key_frames = {
         "input": [],
+        "a2e_output": [],
         "a2f_smoothed_output": []
     }
     # Reads the content of the stream using the read() method of the StreamStreamCall object.
