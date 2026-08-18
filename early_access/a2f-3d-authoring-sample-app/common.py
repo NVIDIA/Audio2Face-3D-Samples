@@ -279,6 +279,11 @@ def upload_audio_clip_and_get_hash(stub: A2FAuthoringServiceStub, filepath: str)
     # Read the audio clip file using SciPy.
     samplerate, data = scipy.io.wavfile.read(filepath)
 
+    if data.ndim != 1:
+        raise ValueError(f"Audio file must be mono; got {data.ndim} channels")
+    if data.dtype != np.int16:
+        raise ValueError(f"Audio file must be 16-bit PCM; got dtype {data.dtype}")
+
     # Create a request to upload the audio clip.
     request = AudioClip(
         audio_header=AudioHeader(
@@ -287,7 +292,7 @@ def upload_audio_clip_and_get_hash(stub: A2FAuthoringServiceStub, filepath: str)
             channel_count=1,
             audio_format=AudioHeader.AUDIO_FORMAT_PCM,
         ),
-        content=data.astype(np.int16).tobytes(),
+        content=data.tobytes(),
     )
     try:
         # Upload the audio clip, retrieve its hash, and get the list of blendshape names that the authoring service will
@@ -416,7 +421,7 @@ def prepare_requests(audio_clip, num_requests):
     """
     # Read audio file and calculate the number of frames needed
     samplerate, data = scipy.io.wavfile.read(audio_clip)
-    num_frames = int((len(data) / samplerate) * 30)
+    num_frames = max(int((len(data) / samplerate) * 30), 1)
 
     # Generate a list of timecodes for frames
     time_codes = [i * TIME_1_FRAME for i in range(num_frames)]
@@ -518,6 +523,10 @@ def perform_parallel_requests(
         thread.join()
     time_end_requests = time.perf_counter()
 
+    failed = [client for client in list_test_clients if client.exception is not None]
+    if failed:
+        raise RuntimeError("One or more latency tester threads failed") from failed[0].exception
+
     # Collect the results and handle exceptions
     list_latencies = [elm.get_latencies() for elm in list_test_clients]
     list_latencies = np.concatenate([np.array(latency) for latency in list_latencies])
@@ -525,7 +534,9 @@ def perform_parallel_requests(
     # Convert request duration and latencies to milliseconds
     request_duration = convert_seconds_to_milliseconds(time_end_requests - time_start_requests)
     list_latencies_ms = convert_seconds_to_milliseconds(np.array(list_latencies))
-    upload_time_ms = np.array([elm.time_upload for elm in list_test_clients]).mean()
+    upload_time_ms = convert_seconds_to_milliseconds(
+        np.array([elm.time_upload for elm in list_test_clients]).mean()
+    )
 
     # Get the blendshape names from one of the tester clients. This is ok since all tester clients connect to the same
     # authoring microservice.
@@ -555,6 +566,7 @@ class LatencyTesterClient:
         self.requests = None
         self.stub = None
         self.blenshape_names = None
+        self.exception = None
 
     def initialize_channel(self):
         if self.is_local:
@@ -587,9 +599,12 @@ class LatencyTesterClient:
             self.latencies_list.append(latency)
 
     def run(self):
-        self.initialize_channel()
-        self.upload_audio()
-        self.make_requests()
+        try:
+            self.initialize_channel()
+            self.upload_audio()
+            self.make_requests()
+        except Exception as exc:
+            self.exception = exc
 
     def get_latencies(self):
         return self.latencies_list
