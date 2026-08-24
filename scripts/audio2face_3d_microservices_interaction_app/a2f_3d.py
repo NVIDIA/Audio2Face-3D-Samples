@@ -134,6 +134,7 @@ async def read_from_stream(stream, should_print_to_files, print_fps):
     # Emotions 'key frames' data from input, a2e output and final a2f-3d smoothed output.
     emotion_key_frames = {
         "input": [],
+        "a2e_output": [],
         "a2f_smoothed_output": []
     }
     # Prep variables to compute latency and fps of the request.
@@ -280,7 +281,7 @@ async def write_to_stream(stream, config_path, audio_file_path, print_fps):
     # Sending the AudioStreamHeader message encapsulated into an AudioStream object.
     await stream.write(audio_stream_header)
 
-    for i in range(len(data) // samplerate + 1):
+    for i in range((len(data) + samplerate - 1) // samplerate):
         # Cutting the audio into arbitrary chunks, here we use sample rate to send exactly one
         # second of audio per packet but the size does not matter.
         chunk = data[i * samplerate : i * samplerate + samplerate]
