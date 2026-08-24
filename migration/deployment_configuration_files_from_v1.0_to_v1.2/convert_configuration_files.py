@@ -128,12 +128,22 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def convert_dict_keys_to_underscores(data):
+    if isinstance(data, dict):
+        return {
+            k.replace("-", "_"): convert_dict_keys_to_underscores(v)
+            for k, v in data.items()
+        }
+    elif isinstance(data, list):
+        return [convert_dict_keys_to_underscores(v) for v in data]
+    return data
+
+
 def load_class(file_path, classtype):
     with open(file_path, "r") as file:
-        yaml_text = file.read()
+        yaml_data = yaml.load(file)
 
-    yaml_text = yaml_text.replace("-", "_")
-    yaml_data = yaml.load(yaml_text)
+    yaml_data = convert_dict_keys_to_underscores(yaml_data)
     config = load_yaml_to_dataclass(yaml_data, classtype)
     return config
 
@@ -235,8 +245,8 @@ def convert_ucs_config(output_folder):
     map_advanced["input_sanitization"]["min_sample_rate"] = int(my_ucs.minSampleRate)
     map_advanced["input_sanitization"]["low_fps"] = int(my_ucs.lowFps)
     map_advanced["input_sanitization"]["low_fps_max_duration_second"] = int(my_ucs.lowFpsMaxDurationSecond)
-    map_advanced["trt_model_generation"]["a2f"]["precision"] = "fp16" if my_ucs.useFP16A2F else "fp32"
-    map_advanced["trt_model_generation"]["a2e"]["precision"] = "fp16" if my_ucs.useFP16A2E else "fp32"
+    map_advanced["trt_model_generation"]["a2f"]["precision"] = "fp16" if str(my_ucs.useFP16A2F).lower() == "true" else "fp32"
+    map_advanced["trt_model_generation"]["a2e"]["precision"] = "fp16" if str(my_ucs.useFP16A2E).lower() == "true" else "fp32"
 
     save_yaml_file(map_style, os.path.join(output_folder, selected_config_style))
     save_yaml_file(map_deploy, os.path.join(output_folder, DEPLOY_CFG))
